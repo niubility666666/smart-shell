@@ -23,7 +23,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: npm
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
@@ -39,6 +38,7 @@ jobs:
           tagName: ${{ github.ref_name }}
           releaseName: "Hiphup SSH ${{ github.ref_name }}"
           releaseBody: "Automated release for ${{ github.ref_name }}"
+          tauriScript: npm run tauri:build
           includeUpdaterJson: false
           includeDebug: false
 
@@ -55,7 +55,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: npm
 
       - name: Setup Java
         uses: actions/setup-java@v4
