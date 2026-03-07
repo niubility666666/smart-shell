@@ -1,7 +1,9 @@
-﻿export type AuthType = "password" | "key";
+export type AuthType = "password" | "key";
 
 export interface SshProfile {
   name: string;
+  group?: string;
+  tags?: string[];
   host: string;
   port: number;
   username: string;
@@ -27,6 +29,19 @@ export interface CommandResult {
   exit_code: number;
 }
 
+export interface DownloadFileResponse {
+  name: string;
+  dataBase64: string;
+}
+
+export interface CommandAudit {
+  level: "low" | "medium" | "high";
+  blocked: boolean;
+  requiresConfirmation: boolean;
+  reason: string;
+  suggested: string;
+}
+
 export type AiProvider = "openai" | "anthropic" | "ollama" | "openai_compatible";
 
 export interface AiMessage {
@@ -40,4 +55,17 @@ export interface AiConfig {
   model: string;
   apiKey?: string;
   temperature?: number;
+}
+
+export interface ModelPreset {
+  id: string;
+  label: string;
+  systemPrompt: string;
+  config: AiConfig;
+}
+
+export interface PromptTemplate {
+  id: string;
+  label: string;
+  prompt: string;
 }

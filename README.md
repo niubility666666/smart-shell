@@ -1,117 +1,136 @@
-﻿# Hiphup SSH
+# Cathup SSH
 
-> 一个类似 Smartty 的跨平台远程 Shell 桌面工具：`Vue3 + Rust + Tauri`。
-> 支持 SSH 命令、远程文件图形管理、AI 终端助手（可接 OpenAI/Anthropic/Ollama/兼容接口），并支持回答拖拽到命令输入框。
+Cathup SSH is a Smartty-style cross-platform remote operations desktop app built with `Vue 3 + Rust + Tauri`.
+It provides long-lived PTY sessions, graphical SFTP operations, AI assistant integration, model presets, command auditing, and secure host credential storage via system keychain.
 
-## 项目亮点
+![Cathup SSH Home Preview](./docs/cathup-home.svg)
 
-- 左侧主机管理：保存多个 SSH 连接（密码 / 私钥）。
-- 中间终端工作区：执行远程命令并展示 stdout/stderr/退出码。
-- 文件图形区：远程目录浏览、文件读取、编辑、保存。
-- 右侧 AI 助手：
-  - 支持多模型提供商接入（OpenAI、Anthropic、Ollama、OpenAI 兼容网关）。
-  - AI 回复可直接拖拽到 Shell 命令输入框。
-  - 也支持一键插入命令框。
-- 窗口操作：自定义顶部栏，支持最小化/最大化/关闭。
-- 跨平台打包：`exe/nsis/msi`（Windows）+ `app/dmg`（macOS）+ `apk`（Android）。
+## Features
 
-## 技术栈
+- Real PTY interaction with long-lived SSH session
+- Command safety audit with risk levels and confirmation/deny rules
+- SFTP file manager: browse, edit, upload, download
+- Drag-and-drop upload to remote directory
+- Right-click context menu: open/download/rename/delete
+- Host grouping and tag support
+- Host credentials stored in system keychain (Keychain/Credential Manager)
+- AI assistant with OpenAI / Anthropic / Ollama / OpenAI-compatible APIs
+- Model presets and prompt templates
+- Drag AI response into terminal command input
 
-- 前端：Vue 3 + TypeScript + Vite
-- 桌面容器：Tauri 2
-- 后端：Rust
-- SSH：`ssh2`
-- AI HTTP：`reqwest`
+## Tech Stack
 
-## 目录结构
+- Frontend: Vue 3 + TypeScript + Vite
+- Desktop runtime: Tauri 2
+- Backend: Rust
+- SSH/SFTP: `ssh2`
+- AI HTTP client: `reqwest`
+- Secure secret storage: `keyring`
+
+## Project Structure
 
 ```text
 smart-shell/
-  src/                       # Vue3 前端
+  src/
+    App.vue
+    styles.css
+    composables/useBackend.ts
+    types.ts
   src-tauri/
-    src/main.rs              # Rust 命令：SSH + 文件 + AI
-    tauri.conf.json          # Tauri 应用与打包配置
-    capabilities/default.json
+    src/main.rs
+    Cargo.toml
+    tauri.conf.json
+  docs/
+    cathup-home.svg
   .github/workflows/release.yml
-  README.md
 ```
 
-## 快速开始
+## Prerequisites
 
-### 1. 安装依赖
+- Node.js 20+
+- Rust stable (recommended via rustup)
+
+Windows prerequisites:
+
+- Visual Studio Build Tools (C++ toolchain)
+- WebView2 Runtime
+
+macOS prerequisites:
+
+- Xcode Command Line Tools
+
+## Run in Development
 
 ```bash
 npm install
-```
-
-### 2. 本地开发
-
-```bash
 npm run tauri:dev
 ```
 
-### 3. 生产打包
+## Local Packaging Steps
+
+### 1. Build all desktop bundles
 
 ```bash
 npm run tauri:build
 ```
 
-构建产物在 `src-tauri/target/release/bundle/` 下。
+### 2. Windows artifacts
 
-## AI 接入说明
+- `exe`: `src-tauri/target/release/bundle/nsis/*.exe`
+- `msi`: `src-tauri/target/release/bundle/msi/*.msi`
 
-右侧 AI 面板中配置：
+### 3. macOS artifacts
 
-- `provider`：`openai` / `anthropic` / `ollama` / `openai_compatible`
-- `endpoint`：模型接口地址
-- `model`：模型名
-- `apiKey`：密钥（Ollama 本地通常可留空）
+- `dmg`: `src-tauri/target/release/bundle/dmg/*.dmg`
+- `app` archive: `src-tauri/target/release/bundle/macos/*.app.tar.gz`
 
-### 示例 Endpoint
-
-- OpenAI: `https://api.openai.com/v1/chat/completions`
-- Anthropic: `https://api.anthropic.com/v1/messages`
-- Ollama: `http://127.0.0.1:11434/api/chat`
-
-## 发布到 GitHub
-
-### 1. 初始化仓库并提交
+To extract the `.app` bundle:
 
 ```bash
-git init
-git add .
-git commit -m "feat: init hiphup ssh desktop app"
+cd src-tauri/target/release/bundle/macos
+tar -xzf *.app.tar.gz
 ```
 
-### 2. 关联远端
+After extraction you will get `Cathup SSH.app`.
 
-```bash
-git branch -M main
-git remote add origin <你的仓库地址>
-git push -u origin main
-```
+## GitHub Release Packaging
 
-### 3. 触发自动发布
-
-推送标签（例如 `v1.0.0`）会触发 `.github/workflows/release.yml`：
+Tag push triggers `.github/workflows/release.yml` and uploads release assets:
 
 ```bash
 git tag v1.0.0
 git push origin v1.0.0
 ```
 
-GitHub Actions 会自动构建并发布安装包。
+Default release artifacts:
 
-## 后续建议（可选）
+- Windows: `exe`, `msi`
+- macOS: `dmg`, `app` archive
+- Android: `apk`
 
-- 接入真实 PTY 交互（保持长连接，而不只是单次命令执行）。
-- 增加 SFTP 上传/下载、拖拽上传、右键菜单。
-- 支持模型预设模板和命令安全审计。
-- 增加主机分组、标签、加密存储（如系统密钥链）。
+## AI Provider Setup
 
-## 说明
+Configure in the right-side AI panel:
 
-- 当前版本已按你提供的界面方向实现核心交互与布局。
-- README 结构采用 RT / Collector 常见风格：功能、架构、启动、发布、后续规划。
+- `provider`: `openai` / `anthropic` / `ollama` / `openai_compatible`
+- `endpoint`: provider API endpoint
+- `model`: model id
+- `apiKey`: API key (optional for local Ollama)
+- `temperature`: sampling temperature
 
+Common endpoints:
 
+- OpenAI: `https://api.openai.com/v1/chat/completions`
+- Anthropic: `https://api.anthropic.com/v1/messages`
+- Ollama: `http://127.0.0.1:11434/api/chat`
+
+## Security Notes
+
+- Host records are stored in system keychain instead of plain local storage.
+- Commands are audited before execution.
+- High-risk commands require confirmation.
+- Destructive command patterns are blocked by default.
+
+## License
+
+MIT

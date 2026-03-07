@@ -1,8 +1,8 @@
-﻿{
+{
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "Hiphup SSH",
+  "productName": "Cathup SSH",
   "version": "1.0.0",
-  "identifier": "com.yukun.hiphup-ssh",
+  "identifier": "com.yukun.cathup-ssh",
   "build": {
     "beforeDevCommand": "npm run dev",
     "beforeBuildCommand": "npm run build",
@@ -12,7 +12,7 @@
   "app": {
     "windows": [
       {
-        "title": "Hiphup SSH",
+        "title": "Cathup SSH",
         "width": 1580,
         "height": 980,
         "resizable": true,
