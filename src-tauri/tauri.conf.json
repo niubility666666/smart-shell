@@ -1,0 +1,43 @@
+﻿{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Hiphup SSH",
+  "version": "0.1.0",
+  "identifier": "com.yukun.hiphup-ssh",
+  "build": {
+    "beforeDevCommand": "npm run dev",
+    "beforeBuildCommand": "npm run build",
+    "frontendDist": "../dist",
+    "devUrl": "http://localhost:1420"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "Hiphup SSH",
+        "width": 1580,
+        "height": 980,
+        "resizable": true,
+        "decorations": false
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "createUpdaterArtifacts": false,
+    "category": "DeveloperTool",
+    "shortDescription": "AI-enhanced remote shell",
+    "longDescription": "A Smartty-like cross-platform remote shell desktop tool with AI assistant and remote file manager.",
+    "windows": {
+      "wix": {
+        "language": ["zh-CN", "en-US"]
+      }
+    },
+    "macOS": {
+      "minimumSystemVersion": "11.0"
+    }
+  }
+}
+

@@ -1,0 +1,13 @@
+﻿node_modules/
+dist/
+.DS_Store
+.vscode/
+.idea/
+*.log
+
+# Rust
+src-tauri/target/
+Cargo.lock
+
+# Tauri build output
+src-tauri/gen/
