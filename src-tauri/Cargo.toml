@@ -1,6 +1,6 @@
 ﻿[package]
 name = "hiphup-ssh"
-version = "0.1.0"
+version = "1.0.0"
 description = "Remote shell + file explorer + AI assistant"
 authors = ["yukun"]
 license = "MIT"
@@ -20,3 +20,4 @@ ssh2 = "0.9"
 [features]
 default = ["custom-protocol"]
 custom-protocol = ["tauri/custom-protocol"]
+

@@ -1,6 +1,6 @@
 ﻿{
   "name": "hiphup-ssh",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -8,7 +8,9 @@
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview",
     "tauri:dev": "tauri dev",
-    "tauri:build": "tauri build"
+    "tauri:build": "tauri build",
+    "tauri:android:init": "tauri android init --ci",
+    "tauri:android:build": "tauri android build --apk"
   },
   "dependencies": {
     "@tauri-apps/api": "^2.0.0",

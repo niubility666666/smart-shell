@@ -13,7 +13,7 @@
   - AI 回复可直接拖拽到 Shell 命令输入框。
   - 也支持一键插入命令框。
 - 窗口操作：自定义顶部栏，支持最小化/最大化/关闭。
-- 跨平台打包：`exe/nsis/msi`（Windows）+ `app/dmg`（macOS）。
+- 跨平台打包：`exe/nsis/msi`（Windows）+ `app/dmg`（macOS）+ `apk`（Android）。
 
 ## 技术栈
 
@@ -93,11 +93,11 @@ git push -u origin main
 
 ### 3. 触发自动发布
 
-推送标签（例如 `v0.1.0`）会触发 `.github/workflows/release.yml`：
+推送标签（例如 `v1.0.0`）会触发 `.github/workflows/release.yml`：
 
 ```bash
-git tag v0.1.0
-git push origin v0.1.0
+git tag v1.0.0
+git push origin v1.0.0
 ```
 
 GitHub Actions 会自动构建并发布安装包。
@@ -113,3 +113,5 @@ GitHub Actions 会自动构建并发布安装包。
 
 - 当前版本已按你提供的界面方向实现核心交互与布局。
 - README 结构采用 RT / Collector 常见风格：功能、架构、启动、发布、后续规划。
+
+

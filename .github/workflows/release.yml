@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  desktop:
     permissions:
       contents: write
     strategy:
@@ -31,7 +31,7 @@ jobs:
       - name: Install frontend dependencies
         run: npm install
 
-      - name: Build and release Tauri app
+      - name: Build and release desktop bundles
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -42,3 +42,63 @@ jobs:
           includeUpdaterJson: false
           includeDebug: false
 
+  android:
+    needs: desktop
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Add Android Rust targets
+        run: rustup target add aarch64-linux-android armv7-linux-androideabi x86_64-linux-android i686-linux-android
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Android components
+        run: |
+          sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0" "ndk;26.3.11579264"
+
+      - name: Install frontend dependencies
+        run: npm install
+
+      - name: Initialize Android project
+        run: npm run tauri:android:init
+
+      - name: Build APK
+        run: npm run tauri:android:build
+
+      - name: Locate APK
+        id: apk
+        run: |
+          APK_PATH="$(find src-tauri/gen/android/app/build/outputs/apk -name '*.apk' | head -n 1)"
+          if [ -z "$APK_PATH" ]; then
+            echo "APK not found"
+            exit 1
+          fi
+          echo "path=$APK_PATH" >> "$GITHUB_OUTPUT"
+
+      - name: Upload APK to release
+        uses: softprops/action-gh-release@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref_name }}
+          files: ${{ steps.apk.outputs.path }}
